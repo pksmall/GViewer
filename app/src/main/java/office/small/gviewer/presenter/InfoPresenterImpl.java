@@ -1,9 +1,11 @@
 package office.small.gviewer.presenter;
 
+import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+
 import office.small.gviewer.model.InfoModel;
 import office.small.gviewer.view.InfoView;
 
-public class InfoPresenterImpl implements InfoPresenter {
+public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements InfoPresenter {
     private final InfoModel model;
 
     public InfoPresenterImpl(InfoModel model) {
@@ -11,7 +13,7 @@ public class InfoPresenterImpl implements InfoPresenter {
     }
 
     @Override
-    public void loadInformation(InfoView view) {
-        view.displayInfo(model.retrieveInfo());
+    public void loadInformation() {
+        getView().displayInfo(model.retrieveInfo());
     }
 }
