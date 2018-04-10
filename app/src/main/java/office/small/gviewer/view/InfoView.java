@@ -1,7 +1,6 @@
 package office.small.gviewer.view;
 
-import com.hannesdorfmann.mosby.mvp.MvpView;
+import com.hannesdorfmann.mosby.mvp.lce.MvpLceView;
 
-public interface InfoView extends MvpView {
-    void displayInfo(String text);
+public interface InfoView extends MvpLceView<String> {
 }

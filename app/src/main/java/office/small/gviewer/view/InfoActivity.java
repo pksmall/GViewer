@@ -1,28 +1,21 @@
 package office.small.gviewer.view;
 
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-
-import com.hannesdorfmann.mosby.mvp.MvpActivity;
-
+import com.hannesdorfmann.mosby.mvp.lce.MvpLceActivity;
 import office.small.gviewer.R;
-import office.small.gviewer.model.InfoModel;
 import office.small.gviewer.model.InfoModelImpl;
 import office.small.gviewer.presenter.InfoPresenter;
 import office.small.gviewer.presenter.InfoPresenterImpl;
 
-public class InfoActivity extends MvpActivity<InfoView, InfoPresenter> implements InfoView {
-    private TextView info;
-
+public class InfoActivity extends MvpLceActivity<TextView, String, InfoView, InfoPresenter> implements InfoView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        info = findViewById(R.id.info);
-        getPresenter().loadInformation();
+        loadData(false);
     }
 
     @NonNull
@@ -32,7 +25,18 @@ public class InfoActivity extends MvpActivity<InfoView, InfoPresenter> implement
     }
 
     @Override
-    public void displayInfo(String text) {
-        info.setText(text);
+    protected String getErrorMessage(Throwable e, boolean pullToRefresh) {
+        String errorMessage = e.getMessage();
+        return errorMessage == null ? "Unknown error" : errorMessage;
+    }
+
+    @Override
+    public void setData(String data) {
+        contentView.setText(data);
+    }
+
+    @Override
+    public void loadData(boolean pullToRefresh) {
+        getPresenter().loadInformation();
     }
 }
