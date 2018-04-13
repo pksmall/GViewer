@@ -18,11 +18,40 @@ android {
     }
 }
 
+ext {
+    // Libraries for samples
+    fragmentargsVersion = '2.1.0'
+    butterknifeVersion = '8.5.1'
+    icepickVersion = '3.0.2'
+    retrofitVersion = '1.9.0'
+    picassoVersion = '2.5.2'
+    okhttpVersion = '2.3.0'
+    parcelablepleaseVersion = '1.0.1'
+    annotatedadapterVersion = '1.1.1'
+    rxjavaVersion = '1.0.16'
+    rxandroidVersion = '1.0.1'
+    dagger2Version = '2.0'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.hannesdorfmann.mosby:mvp:2.0.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    implementation 'com.hannesdorfmann.mosby3:mvp-lce:3.1.0'
+    implementation 'com.hannesdorfmann.mosby3:mvp-nullobject-presenter:3.1.0'
+
+    implementation 'com.jakewharton:butterknife:' + butterknifeVersion
+    annotationProcessor 'com.jakewharton:butterknife-compiler:' + butterknifeVersion
+
+    annotationProcessor 'com.hannesdorfmann.annotatedadapter:processor:' + annotatedadapterVersion
+    implementation 'com.hannesdorfmann.annotatedadapter:annotation:' + annotatedadapterVersion
+    implementation 'com.hannesdorfmann.annotatedadapter:support-recyclerview:' + annotatedadapterVersion
+
+    implementation 'com.hannesdorfmann.parcelableplease:annotation:' + parcelablepleaseVersion
+    annotationProcessor 'com.hannesdorfmann.parcelableplease:processor:' + parcelablepleaseVersion
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'

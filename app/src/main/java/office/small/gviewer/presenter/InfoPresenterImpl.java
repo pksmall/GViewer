@@ -1,6 +1,7 @@
 package office.small.gviewer.presenter;
 
-import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
+
+import com.hannesdorfmann.mosby3.mvp.MvpNullObjectBasePresenter;
 
 import office.small.gviewer.model.InfoModel;
 import office.small.gviewer.model.MyAction;
@@ -14,7 +15,7 @@ public class InfoPresenterImpl extends MvpNullObjectBasePresenter<InfoView> impl
     }
 
     @Override
-    public void loadInformation() {
+    public void loadInformation(final boolean pullToRefresh) {
         getView().showLoading(false);
         model.retrieveInfo(new MyAction<String>() {
             @Override

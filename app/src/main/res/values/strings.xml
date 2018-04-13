@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GViewer</string>
+    <string name="hasError">An error has occurred! click here to retry</string>
 </resources>
