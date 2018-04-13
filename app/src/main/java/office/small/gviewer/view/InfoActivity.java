@@ -6,6 +6,7 @@ package office.small.gviewer.view;
  * TODO: 1. Реализовать pull-to-refresh для обновления данных. После каждого обновления нужно возвращать новую строку, а не одну
  * TODO:    и ту же, как сейчас.
  * TODO: 2. С вероятностью 50% бросать исключение во время “загрузки” данных и, соответственно, обрабатывать его в presenter’е.
+ *
  */
 
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.hannesdorfmann.mosby3.mvp.lce.MvpLceActivity;
 
@@ -20,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import office.small.gviewer.R;
 import office.small.gviewer.adapters.InfoAdapter;
+import office.small.gviewer.model.InfoErrorMessage;
 import office.small.gviewer.model.InfoModelImpl;
 import office.small.gviewer.presenter.InfoPresenter;
 import office.small.gviewer.presenter.InfoPresenterImpl;
@@ -54,8 +57,8 @@ public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, String, Inf
 
     @Override
     protected String getErrorMessage(Throwable e, boolean pullToRefresh) {
-        String errorMessage = e.getMessage();
-        return errorMessage == null ? "Unknown error" : errorMessage;
+        Log.d("INFOACTIVITY-GERRMSG", " PTF: " + pullToRefresh);
+        return InfoErrorMessage.get(e, pullToRefresh, this);
     }
 
     @Override
@@ -81,6 +84,7 @@ public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, String, Inf
 
     @Override
     public void showError(Throwable e, boolean pullToRefresh) {
+        Log.d("INFOACTIVITY-SHOWERROR", " PTF: " + pullToRefresh);
         super.showError(e, pullToRefresh);
         contentView.setRefreshing(false);
     }

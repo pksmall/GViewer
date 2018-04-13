@@ -11,10 +11,10 @@
         android:layout_gravity="center"
         android:drawableTop="@drawable/ic_cloud_off"
         android:drawablePadding="16dp"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textColor="#656565"
         android:text="@string/hasError"
         android:gravity="center"
-        />
+    />
 
 </merge>

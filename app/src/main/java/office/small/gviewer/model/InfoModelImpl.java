@@ -1,15 +1,18 @@
 package office.small.gviewer.model;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
-
+import android.util.Log;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class InfoModelImpl implements InfoModel{
     private ArrayList<String> aData = new ArrayList<String>(20);
     private Random randomGenerator = new Random();
+    private boolean aRandomizer = true;
 
     public InfoModelImpl() {
+        Log.d("CONST-INCOMODELIMP"," aRand: " + aRandomizer);
         aData.add("Aaaa Bbbbb BBB 1");
         aData.add("Aaaa Bbbbb BBB 2");
         aData.add("Aaaa Bbbbb BBB 3");
@@ -32,14 +35,21 @@ public class InfoModelImpl implements InfoModel{
         aData.add("Aaaa Bbbbb BBB 20");
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public void  retrieveInfo(final MyAction<String> onNext) {
-        new AsyncTask<Void, Void, String>(){
+        if (aRandomizer == false) {
+            aRandomizer = true;
+        } else {
+            aRandomizer = false;
+        }
+        new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... voids) {
+                Log.d("RETINFO-INCOMODELIMP", " aRand1: " + aRandomizer);
                 try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -48,6 +58,8 @@ public class InfoModelImpl implements InfoModel{
 
             @Override
             protected void onPostExecute(String s) {
+                //Log.d("RETINFO-INCOMODELIMP", " aRand3: " + aRandomizer);
+                if (aRandomizer) s = "";
                 onNext.onDownloadCallback(s);
             }
         }.execute();
