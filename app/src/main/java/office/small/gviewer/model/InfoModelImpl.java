@@ -58,7 +58,6 @@ public class InfoModelImpl implements InfoModel{
 
             @Override
             protected void onPostExecute(String s) {
-                //Log.d("RETINFO-INCOMODELIMP", " aRand3: " + aRandomizer);
                 if (aRandomizer) s = "";
                 onNext.onDownloadCallback(s);
             }
