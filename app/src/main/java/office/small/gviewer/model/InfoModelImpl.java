@@ -1,10 +1,10 @@
 package office.small.gviewer.model;
 
-import android.annotation.SuppressLint;
-import android.os.AsyncTask;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.Random;
+
+import rx.Observable;
 
 public class InfoModelImpl implements InfoModel{
     private ArrayList<String> aData = new ArrayList<String>(20);
@@ -35,32 +35,8 @@ public class InfoModelImpl implements InfoModel{
         aData.add("Aaaa Bbbbb BBB 20");
     }
 
-    @SuppressLint("StaticFieldLeak")
     @Override
-    public void  retrieveInfo(final MyAction<String> onNext) {
-        if (aRandomizer == false) {
-            aRandomizer = true;
-        } else {
-            aRandomizer = false;
-        }
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... voids) {
-                Log.d("RETINFO-INCOMODELIMP", " aRand1: " + aRandomizer);
-                try {
-                    Thread.sleep(2000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                return aData.get(randomGenerator.nextInt(aData.size()));
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                if (aRandomizer) s = "";
-                onNext.onDownloadCallback(s);
-            }
-        }.execute();
+    public Observable<String> retrieveInfo() {
+        return Observable.just(aData.get(randomGenerator.nextInt(aData.size())));
     }
 }

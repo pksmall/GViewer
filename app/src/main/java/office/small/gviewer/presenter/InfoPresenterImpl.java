@@ -1,12 +1,12 @@
 package office.small.gviewer.presenter;
 
-import com.hannesdorfmann.mosby3.mvp.MvpNullObjectBasePresenter;
+import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import office.small.gviewer.model.InfoModel;
-import office.small.gviewer.model.MyAction;
 import office.small.gviewer.view.InfoView;
+import rx.functions.Action1;
 
-public class InfoPresenterImpl extends MvpNullObjectBasePresenter<InfoView> implements InfoPresenter {
+public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements InfoPresenter {
     private final InfoModel model;
     private InfoView infoView;
 
@@ -17,18 +17,14 @@ public class InfoPresenterImpl extends MvpNullObjectBasePresenter<InfoView> impl
     @Override
     public void loadInformation(final boolean pullToRefresh) {
         infoView = getView();
-        model.retrieveInfo(new MyAction<String>() {
-              @Override
-              public void onDownloadCallback(String s) {
-                  if (s.length() == 0) {
-                      Exception e = new Exception();
-                      infoView.showError(e, pullToRefresh);
-                  } else {
-                      //Log.d("MRET-LOADINFO", " S: " + s);
-                      infoView.setData(s);
-                      infoView.showContent();
-                  }
-              }
+        model.retrieveInfo().subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {
+                if (isViewAttached()) {
+                    infoView.setData(s);
+                    infoView.showContent();
+                }
+            }
         });
     }
 }
