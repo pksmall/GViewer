@@ -4,6 +4,7 @@ import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import office.small.gviewer.model.InfoModel;
 import office.small.gviewer.view.InfoView;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements InfoPresenter {
@@ -17,7 +18,8 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
     @Override
     public void loadInformation(final boolean pullToRefresh) {
         infoView = getView();
-        model.retrieveInfo().subscribe(new Action1<String>() {
+        model.retrieveInfo().observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
             @Override
             public void call(String s) {
                 if (isViewAttached()) {

@@ -3,8 +3,10 @@ package office.small.gviewer.model;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 public class InfoModelImpl implements InfoModel{
     private ArrayList<String> aData = new ArrayList<String>(20);
@@ -12,7 +14,6 @@ public class InfoModelImpl implements InfoModel{
     private boolean aRandomizer = true;
 
     public InfoModelImpl() {
-        Log.d("CONST-INCOMODELIMP"," aRand: " + aRandomizer);
         aData.add("Aaaa Bbbbb BBB 1");
         aData.add("Aaaa Bbbbb BBB 2");
         aData.add("Aaaa Bbbbb BBB 3");
@@ -37,6 +38,12 @@ public class InfoModelImpl implements InfoModel{
 
     @Override
     public Observable<String> retrieveInfo() {
-        return Observable.just(aData.get(randomGenerator.nextInt(aData.size())));
+        return Observable.timer(1L, TimeUnit.SECONDS)
+                .map(new Func1<Long, String>() {
+                    @Override
+                    public String call(Long aLong) {
+                        return aData.get(randomGenerator.nextInt(aData.size()));
+                    }
+                });
     }
 }
