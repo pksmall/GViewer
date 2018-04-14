@@ -39,10 +39,19 @@ public class InfoModelImpl implements InfoModel{
     @Override
     public Observable<String> retrieveInfo() {
         return Observable.timer(1L, TimeUnit.SECONDS)
-                .map(new Func1<Long, String>() {
+                .flatMap(new Func1<Long, Observable<String>>() {
                     @Override
-                    public String call(Long aLong) {
-                        return aData.get(randomGenerator.nextInt(aData.size()));
+                    public Observable<String> call(Long aLong) {
+                        Observable<String> result;
+                        double random = Math.random();
+                        if (random > 0.5 && random < 0.75) {
+                           result = Observable.just(aData.get(randomGenerator.nextInt(aData.size())) + " " + random);
+                        } else if (random > 0.75) {
+                            result = Observable.just(aData.get(randomGenerator.nextInt(aData.size()))  + " !!!!" + random);
+                        } else {
+                            result = Observable.error(new IllegalStateException("Something wrong. Checking..."));
+                        }
+                        return result;
                     }
                 });
     }

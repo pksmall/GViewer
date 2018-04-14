@@ -20,13 +20,20 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
         infoView = getView();
         model.retrieveInfo().observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<String>() {
-            @Override
-            public void call(String s) {
-                if (isViewAttached()) {
-                    infoView.setData(s);
-                    infoView.showContent();
-                }
-            }
-        });
+                    @Override
+                    public void call(String s) {
+                        if (isViewAttached()) {
+                            infoView.setData(s);
+                            infoView.showContent();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        if (isViewAttached()) {
+                            infoView.showError(throwable, pullToRefresh);
+                        }
+                    }
+                });
     }
 }
