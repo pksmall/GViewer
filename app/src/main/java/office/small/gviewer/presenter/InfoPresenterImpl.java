@@ -1,12 +1,11 @@
 package office.small.gviewer.presenter;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
-
 import office.small.gviewer.model.InfoModel;
 import office.small.gviewer.view.InfoView;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements InfoPresenter {
     private final InfoModel model;
@@ -30,7 +29,7 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
     public void loadInformation(final boolean pullToRefresh) {
         infoView = getView();
         subscription = model.retrieveInfo()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.immediate())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
