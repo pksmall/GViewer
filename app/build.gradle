@@ -43,6 +43,7 @@ dependencies {
     implementation 'com.hannesdorfmann.mosby3:mvp-lce:3.1.0'
     implementation 'com.hannesdorfmann.mosby3:mvp-nullobject-presenter:3.1.0'
 
+    // butterknife
     implementation 'com.jakewharton:butterknife:' + butterknifeVersion
     annotationProcessor 'com.jakewharton:butterknife-compiler:' + butterknifeVersion
 
