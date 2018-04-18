@@ -43,7 +43,9 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
                     @Override
                     public void call(Throwable throwable) {
                         if (isViewAttached()) {
-                            infoView.showError(throwable, pullToRefresh);
+                            String s = "Error: empty string";
+                            infoView.setData(s);
+                            infoView.showContent();
                         }
                     }
                 });
