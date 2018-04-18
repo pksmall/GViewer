@@ -29,7 +29,8 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
     @Override
     public void loadInformation(final boolean pullToRefresh) {
         infoView = getView();
-        subscription = model.retrieveInfo().observeOn(AndroidSchedulers.mainThread())
+        subscription = model.retrieveInfo()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
