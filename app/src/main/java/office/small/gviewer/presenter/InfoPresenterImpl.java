@@ -30,22 +30,16 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
         infoView = getView();
         subscription = model.retrieveInfo()
                 .observeOn(Schedulers.immediate())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        if (isViewAttached()) {
-                            infoView.setData(s);
-                            infoView.showContent();
-                        }
+                .subscribe(s -> {
+                    if (isViewAttached()) {
+                        infoView.setData(s);
+                        infoView.showContent();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        if (isViewAttached()) {
-                            String s = "Error: empty string";
-                            infoView.setData(s);
-                            infoView.showContent();
-                        }
+                }, throwable -> {
+                    if (isViewAttached()) {
+                        String s = "Error: empty string";
+                        infoView.setData(s);
+                        infoView.showContent();
                     }
                 });
     }

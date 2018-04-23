@@ -55,7 +55,6 @@ import office.small.gviewer.presenter.InfoPresenter;
 import office.small.gviewer.presenter.InfoPresenterImpl;
 
 public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, String, InfoView, InfoPresenter> implements InfoView,SwipeRefreshLayout.OnRefreshListener {
-
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     InfoAdapter adapter;
 

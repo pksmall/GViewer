@@ -64,12 +64,7 @@ public class InfoModelImpl implements InfoModel{
         final Observable<String> oDataFlow2 = Observable.just(" Flow2: " + bData.get(randomGenerator.nextInt(bData.size())));
 
         oDataFlow1.concatWith(oDataFlow2).subscribeOn(Schedulers.newThread()).subscribe(
-                new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        rString = rString + " " + s;
-                    }
-                }
+                s -> rString = rString + " " + s
         );
 
         return Observable.just(rString);
