@@ -1,38 +1,6 @@
 package office.small.gviewer.view;
 
 /**
- * TODO: DZ 2
- *
- * При выполнении заданий рекомендуется просматривать http://reactivex.io/documentation/operators.html
- *
- * 1.Изменить InfoPresenterImpl#loadInformation так, чтобы в случае возникновения какой-либо ошибки,
- *  данный observable генерировал пустую строку.
- *
- * + Создать два observable, которые «генерируют» какой-либо набор элементов. Например, набор чисел
- * + (на самом деле, это не суть важно). Изменить InfoModelImpl#retrieveInfo так, чтобы из этих двух
- * + потоков данных создавался один, который «генерирует» единственный объект - строку, состоящую из
- * + первого "сгенерированного" элемента из первого observable и аналогичного из второго.
- *
- * + Переписать view так, чтобы он отображал RecyclerView (вертикальным списком), строка которого есть
- * + один лишь TextView.
- *
- * + Переписать model так, чтобы он возвращал некоторый (любой, на ваше усмотрение)набор строк, а не
- * + только одну.
- *
- * + Переписать presenter так, чтобы каждая полученная из model строка добавлялась в список на экране.
- * + При повороте экрана состояние должно сохраняться.
- *
- * + Убрать зависимость от android-sdk в presenter’е. То есть избавится от использования
- * + AndroidSchedulers.mainThread().
- *
- * + 2. (методичка) Создать новый проект. Разместить на Activity два элемента - TextView и EditText.
- * + Нужно добиться, чтобы при вводе символов в EditText эта последовательность символов отображалась
- * + в TextView. Для этой задачи следует использовать метод EditText - addTextChangedListener с объектом
- * + TextWatcher. Ну а все остальное вы знаете из материалов сегодняшнего урока.
- * + https://github.com/pksmall/EditTextWatcher
- *
- * 3. * Создать EventBus, принимающий данные от двух Observable и передающий эти данные двум подписчикам.
- * При этом сама “шина” также должна уметь формировать свои собственные события.
  *
  */
 
@@ -53,8 +21,10 @@ import office.small.gviewer.model.InfoErrorMessage;
 import office.small.gviewer.model.InfoModelImpl;
 import office.small.gviewer.presenter.InfoPresenter;
 import office.small.gviewer.presenter.InfoPresenterImpl;
+import okhttp3.OkHttpClient;
 
 public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, String, InfoView, InfoPresenter> implements InfoView,SwipeRefreshLayout.OnRefreshListener {
+    private static final String MYGITUSER = "pksmall";
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     InfoAdapter adapter;
 
@@ -78,7 +48,7 @@ public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, String, Inf
     @NonNull
     @Override
     public InfoPresenter createPresenter() {
-        return new InfoPresenterImpl(new InfoModelImpl());
+        return new InfoPresenterImpl(new InfoModelImpl(MYGITUSER, new OkHttpClient()));
     }
 
     @Override

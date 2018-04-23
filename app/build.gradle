@@ -27,21 +27,23 @@ ext {
     fragmentargsVersion = '2.1.0'
     butterknifeVersion = '8.5.1'
     icepickVersion = '3.0.2'
-    retrofitVersion = '1.9.0'
-    picassoVersion = '2.5.2'
-    okhttpVersion = '2.3.0'
+    retrofitVersion = '2.4.0'
+    picassoVersion = '2.71828'
+    okhttpVersion = '3.10.0'
     parcelablepleaseVersion = '1.0.1'
     annotatedadapterVersion = '1.1.1'
     rxjavaVersion = '1.2.7'
     rxandroidVersion = '1.2.1'
     dagger2Version = '2.0'
+    gsonVersion = '2.8.2'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
 
     // mosby
     implementation 'com.hannesdorfmann.mosby3:mvp-lce:3.1.0'
@@ -61,6 +63,14 @@ dependencies {
     //rxJava
     implementation 'io.reactivex:rxjava:' + rxjavaVersion
     implementation 'io.reactivex:rxandroid:' + rxandroidVersion
+
+    // gson
+    implementation 'com.google.code.gson:gson:' + gsonVersion
+
+    // okkhttp retrofit picasso
+    implementation 'com.squareup.okhttp3:okhttp:' + okhttpVersion
+    implementation 'com.squareup.retrofit2:retrofit:' + retrofitVersion
+    implementation 'com.squareup.picasso:picasso:' + picassoVersion
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

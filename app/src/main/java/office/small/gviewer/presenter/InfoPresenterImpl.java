@@ -4,6 +4,7 @@ import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import office.small.gviewer.model.InfoModel;
 import office.small.gviewer.view.InfoView;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -29,7 +30,7 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
     public void loadInformation(final boolean pullToRefresh) {
         infoView = getView();
         subscription = model.retrieveInfo()
-                .observeOn(Schedulers.immediate())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> {
                     if (isViewAttached()) {
                         infoView.setData(s);
@@ -37,9 +38,7 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
                     }
                 }, throwable -> {
                     if (isViewAttached()) {
-                        String s = "Error: empty string";
-                        infoView.setData(s);
-                        infoView.showContent();
+                        infoView.showError(throwable, pullToRefresh);
                     }
                 });
     }
