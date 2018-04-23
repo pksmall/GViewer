@@ -3,6 +3,7 @@ package office.small.gviewer.presenter;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import office.small.gviewer.model.InfoModel;
 import office.small.gviewer.view.InfoView;
+import rx.Scheduler;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -32,8 +33,16 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
         subscription = model.retrieveInfo()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> {
-                    if (isViewAttached()) {
-                        infoView.setData(s);
+                    if (isViewAttached()
+                            && (s.getLogin() != null || s.getMesssage() != null)) {
+                        if (s.getMesssage() != null) {
+                            infoView.setData(s.getMesssage());
+                        } else {
+                            infoView.setData("Login: "
+                                    + s.getLogin()
+                                    + "\nID:"
+                                    + s.getId());
+                        }
                         infoView.showContent();
                     }
                 }, throwable -> {
