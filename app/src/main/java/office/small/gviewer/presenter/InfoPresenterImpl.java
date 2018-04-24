@@ -33,16 +33,8 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
         subscription = model.retrieveInfo()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> {
-                    if (isViewAttached()
-                            && (s.getLogin() != null || s.getMesssage() != null)) {
-                        if (s.getMesssage() != null) {
-                            infoView.setData(s.getMesssage());
-                        } else {
-                            infoView.setData("Login: "
-                                    + s.getLogin()
-                                    + "\nID:"
-                                    + s.getId());
-                        }
+                    if (isViewAttached()) {
+                        infoView.setData(s);
                         infoView.showContent();
                     }
                 }, throwable -> {
