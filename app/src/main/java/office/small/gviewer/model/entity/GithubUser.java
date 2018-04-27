@@ -3,6 +3,9 @@ package office.small.gviewer.model.entity;
 import android.support.annotation.Nullable;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * github get user
  * {
@@ -38,20 +41,21 @@ import com.google.gson.annotations.SerializedName;
  "updated_at": "2018-04-18T08:26:25Z"
  }
  */
-public class GithubUser {
+public class GithubUser extends RealmObject {
     private String id;
+    @PrimaryKey
     private String login;
-    private String name;
+    /*private String name;
     private String company;
     private String blog;
     private String location;
-    private String bio;
+    private String bio; */
 
     @SerializedName("avatar_url")
     private String avatar;
 
 
-    public String getName() {
+/*    public String getName() {
         if (name == null) {
             name = "-";
         }
@@ -86,7 +90,9 @@ public class GithubUser {
         return bio;
     }
 
-    public String getAvatar() {
+  */
+
+    public String getAvatarURL() {
         return avatar;
     }
 
@@ -97,5 +103,13 @@ public class GithubUser {
     @Nullable
     public String getLogin() {
         return login;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAvatarURL(String avatar) {
+        this.avatar = avatar;
     }
 }

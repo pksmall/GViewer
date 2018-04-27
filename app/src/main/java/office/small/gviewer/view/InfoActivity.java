@@ -17,6 +17,7 @@ import android.util.Log;
 import com.hannesdorfmann.mosby3.mvp.lce.MvpLceActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.RealmConfiguration;
 import office.small.gviewer.R;
 import office.small.gviewer.adapters.InfoAdapter;
 import office.small.gviewer.model.InfoErrorMessage;
@@ -28,6 +29,8 @@ import office.small.gviewer.presenter.InfoPresenterImpl;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, GithubUser, InfoView, InfoPresenter> implements InfoView,SwipeRefreshLayout.OnRefreshListener {
     private static final String MYGITUSER = "pksmall";
@@ -56,11 +59,12 @@ public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, GithubUser,
     public InfoPresenter createPresenter() {
         GithubService api = new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(GithubService.class);
-        return new InfoPresenterImpl(new InfoModelImpl(MYGITUSER, api));
+        return new InfoPresenterImpl(new InfoModelImpl(MYGITUSER,
+                api, new RealmConfiguration.Builder().build(), AndroidSchedulers.mainThread()));
     }
 
     @Override

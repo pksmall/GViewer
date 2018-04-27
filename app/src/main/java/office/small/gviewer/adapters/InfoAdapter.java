@@ -72,13 +72,13 @@ public class InfoAdapter extends SupportAnnotatedAdapter implements InfoAdapterB
     @Override
     public void bindViewHolder(InfoAdapterHolders.VIEWTYPE_INFOViewHolder vh, int position) {
         if (data != null) {
-            vh.name.setText(data.getName());
             vh.login.setText(data.getLogin());
+/*            vh.name.setText(data.getName());
             vh.location.setText(data.getLocation());
             vh.company.setText(data.getCompany());
             vh.blog.setText(data.getBlog());
-            vh.bio.setText(data.getBio());
-            imageLoader.downloadInto(data.getAvatar(), vh.imgAvatar);
+            vh.bio.setText(data.getBio()); */
+            imageLoader.downloadInto(data.getAvatarURL(), vh.imgAvatar);
         }
     }
 }
