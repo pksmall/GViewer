@@ -5,19 +5,20 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import office.small.gviewer.model.entity.GitUserView;
 import office.small.gviewer.model.entity.GithubUser;
 import rx.Observable;
 
 public interface InfoModel {
     @NonNull
     @AnyThread
-    Observable<? extends List<GithubUser>> observeInfo();
+    Observable<? extends List<GitUserView>> observeInfo();
 
     @NonNull
     @AnyThread
-    Observable<? extends List<GithubUser>> lifecycle();
+    Observable<? extends List<GitUserView>> lifecycle();
 
     @NonNull
     @AnyThread
-    Observable<? extends List<GithubUser>> updateInfo();
+    Observable<? extends List<GitUserView>> updateInfo();
 }

@@ -9,6 +9,7 @@ import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import java.util.List;
 
 import office.small.gviewer.model.InfoModel;
+import office.small.gviewer.model.entity.GitUserView;
 import office.small.gviewer.model.entity.GithubUser;
 import office.small.gviewer.view.InfoView;
 import rx.Scheduler;
@@ -72,9 +73,9 @@ public class InfoPresenterImpl extends MvpBasePresenter<InfoView> implements Inf
     @Override
     public void loadInformation(final boolean pullToRefresh) {
         tryToUnsubscribe(updating);
-        updating = model.observeInfo().map(new Func1<List<GithubUser>, Boolean>() {
+        updating = model.observeInfo().map(new Func1<List<GitUserView>, Boolean>() {
             @Override
-            public Boolean call(List<GithubUser> list) {
+            public Boolean call(List<GitUserView> list) {
                 return list.isEmpty();
             }
         })

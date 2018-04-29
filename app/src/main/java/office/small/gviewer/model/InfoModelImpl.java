@@ -9,6 +9,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import office.small.gviewer.model.api.GithubService;
+import office.small.gviewer.model.entity.GitUserView;
 import office.small.gviewer.model.entity.GithubUser;
 import rx.Observable;
 import rx.Scheduler;
@@ -37,7 +38,7 @@ public class InfoModelImpl implements InfoModel{
 
     @NonNull
     @Override
-    public Observable<? extends List<GithubUser>> lifecycle() {
+    public Observable<? extends List<GitUserView>> lifecycle() {
         return Observable.defer(() -> {
             if (checkRealmIsValid()) {
                 throw new IllegalStateException("Subscribe on lifecycle!!!");
@@ -62,29 +63,33 @@ public class InfoModelImpl implements InfoModel{
 
     @NonNull
     @Override
-    public Observable<? extends List<GithubUser>> observeInfo() {
-        return Observable.defer(new Func0<Observable<RealmResults<GithubUser>>>() {
+    public Observable<? extends List<GitUserView>> observeInfo() {
+        if (!checkRealmIsValid()) {
+            throw new IllegalStateException("Realm is closed!!!");
+        }
+        RealmResults<GithubUser> githubUsers =  realm.where(GithubUser.class).findAllAsync();
+
+        return Observable.defer(new Func0<Observable<List<GitUserView>>>() {
             @Override
-            public Observable<RealmResults<GithubUser>> call() {
-                if (!checkRealmIsValid()) {
-                    throw new IllegalStateException("Realm is closed!!!");
-                }
-                return realm.where(GithubUser.class)
-                        .findAllAsync()
-                        .<RealmResults<GithubUser>>asObservable()
-                        .filter(new Func1<RealmResults<GithubUser>, Boolean>() {
-                            @Override
-                            public Boolean call(RealmResults<GithubUser> githubUsers) {
-                                return githubUsers.isLoaded();
-                            }
-                        });
+            public Observable<List<GitUserView>> call() {
+                GitUserView gitUserView = new GitUserView();
+                GithubUser mGithubUser = githubUsers.get(0);
+                List<GitUserView> lGitUserView = null;
+
+                gitUserView.setId(mGithubUser.getId());
+                gitUserView.setAvatarURL(mGithubUser.getAvatarURL());
+                gitUserView.setLogin(mGithubUser.getLogin());
+
+                lGitUserView.add(gitUserView);
+
+                return Observable.just(lGitUserView);
             }
         }).subscribeOn(scheduler);
     }
 
     @NonNull
     @Override
-    public Observable<? extends List<GithubUser>> updateInfo() {
+    public Observable<? extends List<GitUserView>> updateInfo() {
         return api.getUser(user).observeOn(scheduler).doOnNext(new Action1<GithubUser>() {
             @Override
             public void call(GithubUser githubUser) {
@@ -110,10 +115,19 @@ public class InfoModelImpl implements InfoModel{
                     }
                 });
             }
-        }).map(new Func1<GithubUser, List<GithubUser>>() {
+        }).map(new Func1<GithubUser, List<GitUserView>>() {
             @Override
-            public List<GithubUser> call(GithubUser githubUser) {
-                return Collections.singletonList(githubUser);
+            public List<GitUserView> call(GithubUser githubUser) {
+                GitUserView gitUserView = new GitUserView();
+                List<GitUserView> lGitUserView = null;
+
+                gitUserView.setId(githubUser.getId());
+                gitUserView.setAvatarURL(githubUser.getAvatarURL());
+                gitUserView.setLogin(githubUser.getLogin());
+
+                lGitUserView.add(gitUserView);
+
+                return lGitUserView;
             }
         });
     }

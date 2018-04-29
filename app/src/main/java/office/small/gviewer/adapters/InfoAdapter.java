@@ -10,6 +10,7 @@ import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportAnnotated
 import com.squareup.picasso.Picasso;
 
 import office.small.gviewer.R;
+import office.small.gviewer.model.entity.GitUserView;
 import office.small.gviewer.model.entity.GithubUser;
 import office.small.gviewer.model.image.ImageLoader;
 import office.small.gviewer.model.image.PicassoImageLoad;
@@ -48,7 +49,7 @@ public class InfoAdapter extends SupportAnnotatedAdapter implements InfoAdapterB
                 type = ImageView.class),
         }) public final int VIEWTYPE_INFO = 0;
 
-    GithubUser data;
+    GitUserView data;
     private ImageLoader<ImageView> imageLoader;
 
     public InfoAdapter(Context context) {
@@ -56,11 +57,11 @@ public class InfoAdapter extends SupportAnnotatedAdapter implements InfoAdapterB
         imageLoader = new PicassoImageLoad(Picasso.with(context));
     }
 
-    public void setData(GithubUser data) {
+    public void setData(GitUserView data) {
         this.data = data;
     }
 
-    public GithubUser getData() {
+    public GitUserView getData() {
         return data;
     }
 

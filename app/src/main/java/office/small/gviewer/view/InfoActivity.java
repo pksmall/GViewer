@@ -1,11 +1,11 @@
 package office.small.gviewer.view;
 
 /**
- * TODO DZ 4
- * TODO + 1. Сделать доступными в объектах класса GithubUse имя пользователя, место его работы, город проживания, личный сайт и биографию. Отображать все данные в CardView. Используйте иконки, не нарушайте material guidelines и вообще сделайте это красиво, а не абы как.
- * TODO + 2. Добавить обработку null значений путём замены отсутствующих данных какими-либо заранее определенными (например, каким-либо уведомляющим текстом, либо, в случае отсутствия картинки - картинкой).
- * TODO + 3. Пока аватар загружается, отображать на его месте какое-либо изображение по умолчанию.
- * TODO + 4. Для каждого запроса присваивать заголовку User-Agent значение - имя приложения и его versionName, а заголовку Accept - application/vnd.github.v3+json, чтобы явно указать используемую версию API, как требует его разработчики.
+ * TODO DZ 5
+ * TODO 1. Наши presenter и view не должны знать хоть что-либо про базу данных, поэтому model должна возвращать везде не GithubUser, а некий объект, который с базой не связан и одновременно содержит в себе все нужные для отображения на экране поля.
+ * TODO 2. Вместо какого-либо константного сообщения об ошибке во время обновления данных, отображать какое-либо соответственно тому, что произошло в действительности.
+ * TODO 3. (методичка) Доработать пример из урока так, чтобы вместо SugarORM, запись, чтение и удаление производились, в стандартную sqlite. Сравнить скорость работы sqlite с realm.
+ * TODO 4. *Переделать пример, используя асинхронные методы Realm (executeTransactionAsync()).
  */
 
 import android.support.annotation.NonNull;
@@ -23,6 +23,7 @@ import office.small.gviewer.adapters.InfoAdapter;
 import office.small.gviewer.model.InfoErrorMessage;
 import office.small.gviewer.model.InfoModelImpl;
 import office.small.gviewer.model.api.GithubService;
+import office.small.gviewer.model.entity.GitUserView;
 import office.small.gviewer.model.entity.GithubUser;
 import office.small.gviewer.presenter.InfoPresenter;
 import office.small.gviewer.presenter.InfoPresenterImpl;
@@ -32,7 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, GithubUser, InfoView, InfoPresenter> implements InfoView,SwipeRefreshLayout.OnRefreshListener {
+public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, GitUserView, InfoView, InfoPresenter> implements InfoView,SwipeRefreshLayout.OnRefreshListener {
     private static final String MYGITUSER = "pksmall";
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     InfoAdapter adapter;
@@ -74,7 +75,7 @@ public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, GithubUser,
     }
 
     @Override
-    public void setData(GithubUser data) {
+    public void setData(GitUserView data) {
         runOnUiThread(() -> {
             adapter.setData(data);
             adapter.notifyDataSetChanged();
