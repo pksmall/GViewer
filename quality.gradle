@@ -1,0 +1,136 @@
+apply plugin: 'checkstyle'
+checkstyle {
+	toolVersion = '7.1.2'
+}
+task checkstyle(type: Checkstyle) {
+	ignoreFailures = false
+	configFile file("$project.rootDir/config/checkstyle.xml")
+
+	source 'src/main/java'
+	classpath = files()
+
+	reports {
+		xml.enabled = false
+		html.enabled = true
+	}
+}
+
+apply plugin: 'findbugs'
+task findbugs(type: FindBugs) {
+	ignoreFailures = false
+	effort = 'max'
+	reportLevel = 'low'
+
+	excludeFilter = new File("$project.rootDir/config/findbugs.xml")
+	classes = files("$project.buildDir/intermediates/classes")
+	source 'src/main/java'
+	classpath = files()
+
+	reports {
+		xml.enabled = false
+		html.enabled = true
+	}
+}
+
+apply plugin: 'pmd'
+task pmd(type: Pmd) {
+	ignoreFailures = false
+	ruleSetFiles = files("$project.rootDir/config/pmd.xml")
+
+	source 'src/main/java'
+
+	reports {
+		xml.enabled = false
+		html.enabled = true
+	}
+}
+
+// github.com/artem-zinnatullin/qualitymatters/blob/master/code_quality_tools/jacoco.gradle
+// With implemented instrumented-test reports merging 
+apply plugin: 'jacoco'
+project.afterEvaluate {
+	task createCoverageReport {
+		group = 'Verification'
+		description = 'Creates test coverage reports for all available variants.'
+	}
+	def buildTypes = android.buildTypes
+	def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
+	if (!productFlavors) productFlavors.add('')
+	productFlavors.each { productFlavorName ->
+		buildTypes.each { buildType ->
+			def buildTypeName = buildType.name
+			def sourceName, sourcePath
+			if (!productFlavorName) {
+				sourceName = sourcePath = "${buildTypeName}"
+			} else {
+				sourceName = "${productFlavorName}${buildTypeName.capitalize()}"
+				sourcePath = "${productFlavorName}/${buildTypeName}"
+			}
+			def capitalizedSourceName = sourceName.capitalize()
+			def unitTestTaskName = "test${capitalizedSourceName}UnitTest"
+
+			def jacocoClasses = fileTree(
+					dir: "${project.buildDir}/intermediates/classes/${sourcePath}",
+					excludes: ['**/R.class', // Android stuff
+							   '**/R$*.class', // ...
+							   '**/BuildConfig.*', // ...
+							   '**/Manifest*.*', // ...
+							   '**/*_ViewBinding*.*', // ButterKnife auto-generated code.
+							   'io/realm/**', // Realm auto-generated code.
+							   '**/model/entity/**/*', // Entities (pojos)
+							   '**/*Module.*', // Modules for Dagger.
+							   '**/*Dagger*.*', // Dagger auto-generated code.
+							   '**/*MembersInjector*.*', // ...
+							   '**/*_Factory.*', // ...
+							   '**/*_Provide*Factory*.*']) // ...
+			def unitExecutionData = files("${project.buildDir}/jacoco/${unitTestTaskName}.exec")
+			def coverageSourceDirs = files([
+					'src/main/java',
+					"src/$productFlavorName/java",
+					"src/$buildTypeName/java"
+			])
+			def configureClosure = {
+				group = 'Verification'
+				classDirectories = jacocoClasses
+				sourceDirectories = coverageSourceDirs
+				reports {
+					html.enabled = true
+					xml.enabled = false
+				}
+			}
+
+			def coverageUnitTaskName = "create${capitalizedSourceName}UnitCoverageReport"
+			def coverageInstrumentTaskName = "create${capitalizedSourceName}CoverageReport"
+			def coverageAggregatedTaskName = "create${capitalizedSourceName}AggregatedCoverageReport"
+
+			task "$coverageUnitTaskName"(type: JacocoReport, dependsOn: unitTestTaskName) {
+				description = "Creates unit-test coverage reports for $sourceName variant."
+				executionData = unitExecutionData
+				configure configureClosure
+			}
+			if (buildType.testCoverageEnabled) {
+				task "$coverageAggregatedTaskName"(type: JacocoReport, dependsOn: [coverageUnitTaskName, coverageInstrumentTaskName]) {
+					description = "Merges unit-test and instrumented-test coverage reports for $sourceName variant."
+					// todo: check for *.ec availability
+					// todo: handle no-flavor case
+					executionData = unitExecutionData + fileTree(dir: "${project.buildDir}/outputs/code-coverage/connected/flavors/${productFlavorName.toUpperCase()}/", includes: ['*.ec'])
+					configure configureClosure
+				}
+				createCoverageReport.dependsOn(coverageAggregatedTaskName)
+			}
+			createCoverageReport.dependsOn(coverageUnitTaskName)
+		}
+	}
+}
+
+android {
+	lintOptions {
+		warningsAsErrors true
+		abortOnError false
+		xmlReport false
+		htmlReport true
+		htmlOutput file("$project.buildDir/reports/lint/lint.html")
+		disable 'GoogleAppIndexingWarning', 'InvalidPackage'
+	}
+}
+

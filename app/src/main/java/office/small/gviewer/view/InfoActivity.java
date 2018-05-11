@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import io.realm.RealmConfiguration;
 import office.small.gviewer.R;
 import office.small.gviewer.adapters.InfoAdapter;
+import office.small.gviewer.di.InfoComponent;
 import office.small.gviewer.model.InfoErrorMessage;
 import office.small.gviewer.model.InfoModelImpl;
 import office.small.gviewer.model.api.GithubService;
@@ -36,11 +37,16 @@ public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, GithubUser,
     private static final String MYGITUSER = "pksmall";
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     InfoAdapter adapter;
+    private InfoComponent component;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        component = createComponentBuilder().build();
+//        component.inject(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
 
         // setup SwipeRefreshLayout
@@ -66,6 +72,10 @@ public class InfoActivity extends MvpLceActivity<SwipeRefreshLayout, GithubUser,
         return new InfoPresenterImpl(new InfoModelImpl(MYGITUSER,
                 api, new RealmConfiguration.Builder().build(), AndroidSchedulers.mainThread()));
     }
+
+//    protected DaggerInfoComponent.Builder createComponentBuilder() {
+//        return DaggerInfoComponent.builder().activityModule(new ActivityModule(this));
+//    }
 
     @Override
     protected String getErrorMessage(Throwable e, boolean pullToRefresh) {

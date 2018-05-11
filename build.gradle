@@ -28,3 +28,11 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+subprojects {
+    afterEvaluate {
+        tasks.findByName('findbugs').dependsOn('assemble')
+        def checkTask = tasks.findByName('check')
+        ['pmd', 'findbugs', 'checkstyle'].collect { checkTask.dependsOn(it) }
+    }
+}
